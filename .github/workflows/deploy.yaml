@@ -1,0 +1,35 @@
+name: Docker Build, Test, and Deploy
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Log in to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build Docker image
+      run: docker build -t my-flask-app .
+
+    - name: Tag Docker image
+      run: |
+        IMAGE_TAG=latest
+        docker tag my-flask-app:latest ${{ steps.login-ecr.outputs.registry }}/my-flask-app:$IMAGE_TAG
+
+    - name: Push Docker image to ECR
+      run: |
+        IMAGE_TAG=latest
+        docker push ${{ steps.login-ecr.outputs.registry }}/my-flask-app:$IMAGE_TAG
+
+    - name: Output success message
+      if: success()
+      run: echo "Docker build and push to ECR successful"
