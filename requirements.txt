@@ -1,0 +1,11 @@
+# Flask for web development
+Flask==2.1.1
+
+# Requests for making HTTP requests
+requests==2.27.1
+
+# SQLAlchemy for database management
+SQLAlchemy==1.4.32
+
+# pytest for testing
+pytest==7.1.2
